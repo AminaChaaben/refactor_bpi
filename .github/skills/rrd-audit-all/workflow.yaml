@@ -1,0 +1,40 @@
+# Refactor Detective workflow: rrd-audit-all
+name: rrd-audit-all
+# prettier-ignore
+description: 'Run all ten detectors against a project (optionally scoped incrementally to changed files) and produce one consolidated HTML report, ranked by estimated false-fail impact, with a trend vs. the prior run. Use when the user says "audit all" or "run a full refactor radar audit"'
+
+config_source: "{project-root}/_bmad/rrd/config.yaml"
+output_folder: "{config_source}:output_folder"
+rrd_artifacts: "{config_source}:rrd_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+installed_path: "."
+instructions: "./instructions.md"
+validation: "./checklist.md"
+template: "./audit-report-template.html"
+
+variables:
+  target_project: ""
+
+default_output_file: "{target_project_root}/proposals/refactor-radar-audit-{date}.html"
+diff_output_folder: "{target_project_root}/proposals"
+
+required_tools:
+  - Bash
+  - Read
+  - Grep
+  - write_file
+
+tags:
+  - refactor-radar
+  - audit
+  - report
+  - consolidated
+
+execution_hints:
+  interactive: false
+  autonomous: true
+  iterative: true

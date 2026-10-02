@@ -1,0 +1,39 @@
+# Refactor Detective workflow: rrd-detect-locators
+name: rrd-detect-locators
+# prettier-ignore
+description: 'Find locator-strategy gaps: duplicated selectors across page objects, absent priority convention, missing centralized element repository. Use when the user says "detect locator issues" or "audit selector strategy"'
+
+config_source: "{project-root}/_bmad/rrd/config.yaml"
+output_folder: "{config_source}:output_folder"
+rrd_artifacts: "{config_source}:rrd_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+installed_path: "."
+instructions: "./instructions.md"
+validation: "./checklist.md"
+
+variables:
+  target_project: ""
+
+default_output_file: "{rrd_artifacts}/detect-locators-{target_project}.md"
+diff_output_folder: "{target_project_root}/proposals"
+
+required_tools:
+  - Bash
+  - Read
+  - Grep
+  - write_file
+
+tags:
+  - refactor-radar
+  - locators
+  - selectors
+  - page-objects
+
+execution_hints:
+  interactive: false
+  autonomous: true
+  iterative: false

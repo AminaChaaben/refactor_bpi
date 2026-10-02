@@ -1,0 +1,23 @@
+# DO NOT EDIT -- overwritten on every update.
+#
+# Workflow customization surface for rrd-apply-and-verify. Mirrors the
+# agent customization shape under the [workflow] namespace.
+
+[workflow]
+
+activation_steps_prepend = []
+activation_steps_append = []
+
+persistent_facts = [
+  "file:{project-root}/**/project-context.md",
+]
+
+on_complete = ""
+
+# When true, a diff whose full-suite run regresses (new failure not present
+# before this diff) is automatically reverted via `git checkout -- <file>`
+# before reporting, instead of only suggesting the revert as an owner-initiated
+# option. Defaults to false: this workflow's standing convention is to never
+# touch git state without the owner asking, and auto-rollback is a deliberate,
+# explicit opt-in departure from that, not a new default.
+auto_rollback_on_regression = false

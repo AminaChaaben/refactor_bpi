@@ -1,0 +1,35 @@
+# Refactor Detective workflow: rrd-export-tickets
+name: rrd-export-tickets
+# prettier-ignore
+description: 'Turn the top-N ranked opportunities from a completed rrd-audit-all run into GitLab issues. Use when the user says "export opportunities as tickets" or "create issues from the audit report"'
+
+config_source: "{project-root}/_bmad/rrd/config.yaml"
+rrd_artifacts: "{config_source}:rrd_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+installed_path: "."
+instructions: "./instructions.md"
+validation: "./checklist.md"
+
+variables:
+  target_project: ""
+  source_report: ""
+  gitlab_project: ""
+  top_n: ""
+
+required_tools:
+  - Read
+  - Bash
+
+tags:
+  - refactor-radar
+  - export
+  - gitlab
+  - tickets
+
+execution_hints:
+  interactive: true
+  autonomous: false
+  iterative: false

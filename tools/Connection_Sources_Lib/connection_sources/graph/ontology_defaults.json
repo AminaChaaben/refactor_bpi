@@ -1,0 +1,102 @@
+{
+  "issue_type_labels": {
+    "epic": ["Epic"],
+    "feature": ["Feature"],
+    "fonctionnalité": ["Feature"],
+    "story": ["Story"],
+    "user story": ["Story"],
+    "product backlog item": ["Story"],
+    "task": ["Task"],
+    "tâche": ["Task"],
+    "tache fonctionnelle": ["Task"],
+    "urgent": ["Task"],
+    "sub-task": ["SubTask"],
+    "subtask": ["SubTask"],
+    "sous-tâche": ["SubTask"],
+    "bug": ["Bug"],
+    "test": ["Test"],
+    "test case": ["Test"],
+    "test case manuel": ["Test"],
+    "test case cucumber": ["Test"],
+    "xray test": ["Test"],
+    "precondition": ["Precondition"],
+    "précondition": ["Precondition"],
+    "test set": ["TestSet"],
+    "test suite": ["TestSet"],
+    "test plan": ["TestPlan"],
+    "plan de test": ["TestPlan"],
+    "test execution": ["TestExecution"],
+    "test exécution": ["TestExecution"],
+    "sub test execution": ["TestExecution"],
+
+    "issue": ["Task"],
+    "shared steps": ["Test"],
+    "requirement": ["Requirement"],
+    "impediment": ["Task"]
+  },
+
+  "link_types": {
+    "blocks": {"rel": "BLOCKS", "reverse": false},
+    "cloners": {"rel": "CLONES", "reverse": false},
+    "duplicate": {"rel": "DUPLICATES", "reverse": false},
+    "relates": {"rel": "RELATES_TO", "reverse": false},
+    "problem/incident": {"rel": "CAUSES", "reverse": false},
+    "polaris work item link": {"rel": "IMPLEMENTS", "reverse": false},
+    "defect": {"rel": "FOUND_DEFECT", "reverse": false},
+    "test": {"rel": "COVERS", "reverse": true},
+    "tests": {"rel": "COVERS", "reverse": true},
+    "test case linkage": {"rel": "COVERS", "reverse": true},
+
+    "system.linktypes.hierarchy": {"rel": "CHILD_OF", "reverse": true},
+    "system.linktypes.dependency": {"rel": "BLOCKS", "reverse": false},
+    "system.linktypes.related": {"rel": "RELATES_TO", "reverse": false},
+    "system.linktypes.duplicate": {"rel": "DUPLICATES", "reverse": false},
+    "microsoft.vsts.common.testedby": {"rel": "COVERS", "reverse": true},
+    "microsoft.vsts.common.affects": {"rel": "AFFECTS", "reverse": false},
+    "microsoft.vsts.testcase.sharedstepreferencedby": {"rel": "CALLS", "reverse": true}
+  },
+
+  "coverage_statuses": [
+    "OK",
+    "NOTRUN",
+    "FAIL",
+    "UNCOVERED"
+  ],
+
+  "status_categories": {
+    "new": "To Do",
+    "to do": "To Do",
+    "open": "To Do",
+    "backlog": "To Do",
+    "proposed": "To Do",
+    "approved": "To Do",
+    "ready": "To Do",
+    "active": "In Progress",
+    "in progress": "In Progress",
+    "committed": "In Progress",
+    "doing": "In Progress",
+    "resolved": "In Progress",
+    "in review": "In Progress",
+    "closed": "Done",
+    "done": "Done",
+    "completed": "Done",
+    "removed": "Done"
+  },
+
+  "run_status_aliases": {
+    "passed": "PASS",
+    "pass": "PASS",
+    "success": "PASS",
+    "successful": "PASS",
+    "failed": "FAIL",
+    "fail": "FAIL",
+    "todo": "TODO",
+    "to do": "TODO",
+    "notrun": "TODO",
+    "not run": "TODO",
+    "executing": "EXECUTING",
+    "in progress": "EXECUTING",
+    "aborted": "ABORTED",
+    "blocked": "ABORTED"
+  }
+}

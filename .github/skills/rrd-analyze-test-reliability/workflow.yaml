@@ -1,0 +1,45 @@
+# Refactor Detective workflow: rrd-analyze-test-reliability
+name: rrd-analyze-test-reliability
+# prettier-ignore
+description: 'Analyze execution logs across multiple test runs to classify false positives (flaky) and false negatives (tests that lie). Use when the user says "analyze test reliability", "find flaky tests from logs", or "find false positives/negatives"'
+
+config_source: "{project-root}/_bmad/rrd/config.yaml"
+output_folder: "{config_source}:output_folder"
+rrd_artifacts: "{config_source}:rrd_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+installed_path: "."
+instructions: "./instructions.md"
+validation: "./checklist.md"
+
+variables:
+  target_project: ""
+  log_sources: [] # paths to log files/directories: JUnit XML dir, Playwright JSON report, Jenkins console log(s)
+  log_format: "auto" # auto-detect, or owner-specified: junit-xml | playwright-json | jenkins-console
+  min_runs_required: 2
+
+default_output_file: "{rrd_artifacts}/test-reliability-{target_project}-{date}.md"
+diff_output_folder: "{target_project_root}/proposals"
+
+required_tools:
+  - Bash
+  - Read
+  - Grep
+  - read_file
+  - bash
+  - write_file
+
+tags:
+  - refactor-radar
+  - test-reliability
+  - false-positive
+  - false-negative
+  - execution-logs
+
+execution_hints:
+  interactive: true
+  autonomous: false
+  iterative: true

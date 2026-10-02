@@ -1,0 +1,40 @@
+# Refactor Detective workflow: rrd-detect-complexity
+name: rrd-detect-complexity
+# prettier-ignore
+description: 'Find high-complexity, hard-to-maintain, or hidden-risk code via graph complexity metrics. Use when the user says "detect complexity" or "find complex/hotspot code"'
+
+config_source: "{project-root}/_bmad/rrd/config.yaml"
+output_folder: "{config_source}:output_folder"
+rrd_artifacts: "{config_source}:rrd_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+installed_path: "."
+instructions: "./instructions.md"
+validation: "./checklist.md"
+
+variables:
+  target_project: ""
+  complexity_thresholds: "default" # owner may narrow/widen per-metric thresholds
+
+default_output_file: "{rrd_artifacts}/detect-complexity-{target_project}.md"
+diff_output_folder: "{target_project_root}/proposals"
+
+required_tools:
+  - Bash
+  - Read
+  - Grep
+  - write_file
+
+tags:
+  - refactor-radar
+  - complexity
+  - maintainability
+  - hotspots
+
+execution_hints:
+  interactive: false
+  autonomous: true
+  iterative: false

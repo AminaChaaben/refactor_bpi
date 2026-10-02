@@ -1,0 +1,20 @@
+# Pinned host keys for gitlab.com, published at
+# https://docs.gitlab.com/user/gitlab_com/#ssh-host-keys-fingerprints
+#
+# Used as UserKnownHostsFile for every clone/pull/push in gitlab_git.py so host
+# verification never falls back to StrictHostKeyChecking=no or to trust-on-first-use.
+# A project pointing at a self-hosted GitLab may instead supply its own file via the
+# GITLAB_SSH_KNOWN_HOSTS environment variable -- but that variable is only ever visible
+# to an interactive shell that set it, never to a real `usine.py spawn` (isolated env)
+# and never portable to a different machine. This deployment's one self-hosted
+# instance (gitlab.dom.tti, Talan_Factory's `git.url`) is pinned directly below instead,
+# same as gitlab.com -- these are host PUBLIC keys, not secrets; pinning one doesn't
+# grant any access, it only lets git recognize a server it already expects to talk to.
+#
+# Re-verify these against the URL above (or your own `ssh-keyscan <host>` compared
+# out-of-band against the host's published fingerprints) before trusting them blindly.
+gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
+gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
+gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
+gitlab.dom.tti ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFYlG60n7EdmB8yoL/GbSry19kRDoJ7ruVJCfgOEJ8Nl
+gitlab.dom.tti ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBByXPx09ehrGYPIrb9CsJdAFL12fT0SiYbVIn/9Zi544/U1Z5/7AXFhtpxtxtXfn3CAnPc+uK77Ravqqx1VDSLo=

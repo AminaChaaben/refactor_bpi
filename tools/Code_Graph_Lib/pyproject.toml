@@ -1,0 +1,38 @@
+[project]
+name = "code-graph"
+version = "0.1.0"
+description = "Per-project code graph: CodeGraphContext as extractor, loaded into the project's Neo4j with the ALM graph's own loader."
+# <3.14: the scratch store is KùzuDB, whose final release (0.11.3) ships
+# self-contained wheels up to cp313 on Windows/macOS (Linux has cp314). LadybugDB,
+# CGC's default, needs a separately downloaded C library at runtime, which a
+# sandbox without internet cannot fetch.
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "connection-sources[graph]",
+    # Used only as an extractor (`cgc index` into a scratch KùzuDB store, then
+    # `cgc bundle export`); pinned because the bundle format and labels are read here.
+    "codegraphcontext==0.6.13",
+    "kuzu==0.11.3",
+    "tree-sitter>=0.24.0,<0.26.0",
+    "tree-sitter-language-pack>=1.6,<2.0",
+]
+
+[project.scripts]
+code-graph = "code_graph.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[tool.uv.sources]
+connection-sources = { path = "../Connection_Sources_Lib", editable = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["code_graph*"]

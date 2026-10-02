@@ -1,0 +1,29 @@
+# Refactor Radar module configuration (mirror of the rrd section in _bmad/config.yaml
+# and the rrd_artifacts/user settings in _bmad/config.user.yaml — written for
+# structural parity with Test Architecture Enterprise's module-level config file
+# convention; the unified _bmad/config.yaml remains the source of truth on reconfigure).
+#
+# This file is safe to hand-edit at any time — Ray and every rrd-* workflow re-read it
+# on each activation, and rrd-setup preserves any value already here (see field notes
+# below) rather than blindly overwriting it. You do not need to re-run setup just to
+# change one of these values.
+
+# Where Ray writes findings summaries and audit reports (not diff proposals, which
+# always go to the target project's own proposals/). Any path; {project-root} is a
+# literal token, not a placeholder to resolve by hand.
+rrd_artifacts: "{{RRD_ARTIFACTS}}"
+
+# Root output directory for this project's BMad-generated artifacts, shared across
+# modules. Any path; {project-root} is a literal token.
+output_folder: "{{OUTPUT_FOLDER}}"
+
+# Name Ray/other agents use to greet you. Any string.
+user_name: "{{USER_NAME}}"
+
+# Language for all agent communication in this session (chat responses). Any language
+# name Claude can converse in, e.g. "English", "Swahili", "French".
+communication_language: "{{COMMUNICATION_LANGUAGE}}"
+
+# Language for written output documents (reports, findings summaries) — can differ from
+# communication_language. Same value space.
+document_output_language: "{{DOCUMENT_OUTPUT_LANGUAGE}}"

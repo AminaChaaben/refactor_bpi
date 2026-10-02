@@ -1,0 +1,20 @@
+# DO NOT EDIT -- overwritten on every update.
+#
+# Workflow customization surface for rrd-detect-dependencies. Mirrors the
+# agent customization shape under the [workflow] namespace.
+
+[workflow]
+
+# --- Configurable below. Overrides merge per BMad structural rules: ---
+#   scalars: override wins • arrays (persistent_facts, activation_steps_*): append
+
+activation_steps_prepend = []
+activation_steps_append = []
+
+persistent_facts = [
+  "file:{project-root}/**/project-context.md",
+]
+
+# Scalar: executed when the workflow reaches its terminal step,
+# after the final findings and diff proposals are produced.
+on_complete = ""

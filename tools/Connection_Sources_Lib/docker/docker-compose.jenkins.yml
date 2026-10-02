@@ -1,0 +1,82 @@
+# An explicit, distinct project name -- see docker-compose.vault.yml's own `name:`
+# comment for the incident this prevents (this file's `--remove-orphans` deleted the
+# running Vault container because both files, unnamed, shared one Compose project by
+# virtue of sitting in the same folder).
+name: talan-dev-jenkins
+
+# Local development Jenkins for the CI pipeline steps (PREPARE_CI / CREATE_CI_PIPELINE /
+# PUBLISH_CI / EXECUTE_CI) to have something real to talk to.
+#
+# The setup wizard is disabled and a fixed admin account is provisioned by the Groovy
+# script in jenkins-init/, the same way docker-compose.vault.yml uses a fixed
+# VAULT_DEV_ROOT_TOKEN_ID -- this is a throwaway dev instance only, never point it at
+# anything but local development. Host port 8080 is already taken by the Application
+# frontend container, so the UI is published on 8090 instead.
+#
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: talan-dev-jenkins
+    # Jenkins' own /restart and /safeRestart (used after installing plugins) work
+    # by having the JVM exit and relying on the surrounding platform to bring the
+    # process back -- there is no in-place re-exec inside a plain container the
+    # way a bare-metal install's wrapper script provides. Without a restart
+    # policy, that JVM exit is a permanent stop: confirmed live, `docker logs`
+    # showed a clean "Stopping Jenkins as requested by admin" followed by the
+    # container sitting `Exited (5)` until someone noticed and ran `docker start`
+    # by hand. `unless-stopped` makes a plugin-install restart self-heal, while
+    # still respecting a deliberate `docker compose down`.
+    restart: unless-stopped
+    ports:
+      - "8090:8080"
+      - "50000:50000"
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
+    volumes:
+      - talan-dev-jenkins-data:/var/jenkins_home
+      - ./jenkins-init:/usr/share/jenkins/ref/init.groovy.d
+    healthcheck:
+      # curl, not wget -- this image is Debian trixie and has no wget binary at all;
+      # confirmed live (`which wget` -> not found, `which curl` -> /usr/bin/curl),
+      # which is why this healthcheck reported unhealthy for several minutes on a
+      # perfectly-working Jenkins (real admin API calls succeeded the whole time).
+      test: ["CMD", "curl", "-f", "-s", "-o", "/dev/null", "http://127.0.0.1:8080/login"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+volumes:
+  talan-dev-jenkins-data:
+
+# Usage:
+#   docker compose -f docker-compose.jenkins.yml up -d
+#
+# Verify:
+#   curl -u admin:talan-dev-jenkins-token http://localhost:8090/api/json
+#
+# Point the project's config at it (see Talan_Factory/Talan_usine_config/.env.example):
+#   JENKINS_URL=http://127.0.0.1:8090
+#   JENKINS_USER=admin
+#   JENKINS_TOKEN=talan-dev-jenkins-token
+#
+# One-time plugin bootstrap (this base image ships with ZERO plugins -- confirmed
+# live -- so a genuine Jenkinsfile-backed Pipeline job cannot be created until
+# this has been run once per fresh volume). Via JenkinsClient
+# (connection_sources.clients.jenkins): install_plugins(["git", "workflow-aggregator"]),
+# then wait_for_plugin_installs(), then restart(), then wait_until_up() -- see
+# that module for the exact sequence and why the order matters. TODO: wrap this
+# as a `jenkins-plugins-install` CLI command once the jenkins-* CLI surface exists
+# (see cli.py's gitlab pipeline-* commands for the shape to mirror).
+# This queues the two plugins plus their full dependency tree (46 jobs, live --
+# mostly transitive deps of workflow-aggregator), waits for every job to reach a
+# terminal state, then restarts Jenkins so they activate. Do NOT restart before
+# every job is done: an earlier attempt here restarted after a fixed sleep while
+# most of the 46 jobs were still Pending, and activated none of the two plugins
+# actually asked for -- only the handful of dependencies that happened to finish
+# first.
+#
+# Stop:
+#   docker compose -f docker-compose.jenkins.yml down
+# Stop and discard all jobs/config:
+#   docker compose -f docker-compose.jenkins.yml down -v

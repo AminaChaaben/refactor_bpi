@@ -1,0 +1,71 @@
+[project]
+name = "connection-sources"
+version = "0.2.0"
+description = "ALM connection sources for the orchestrator: Jira, Xray, Azure DevOps, GitLab."
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27",
+    "mcp>=1.2",
+    "python-dotenv>=1.0",
+    # zoneinfo (stdlib) has no IANA tz database of its own on Windows -- this
+    # supplies it, so period_check_script's Europe/Paris (or any other zone)
+    # conversion is correct under this project's own venv, not just wherever
+    # the OS happens to ship one.
+    "tzdata>=2024.1",
+    # SSH key vault (ssh_vault.py): HashiCorp Vault client.
+    "hvac>=2.0",
+    # Orchestrateur_Lib/scheduler/unified_tick.py runs inside THIS project's uv
+    # venv (its own top-level `import connection_sources...` forces that), but
+    # it also imports orchestrator/killswitch/spawn, which need these. Kept
+    # here rather than pip-installed into a shared interpreter so
+    # `uv run --project Connection_Sources_Lib --frozen` stays self-contained
+    # and offline-resolvable (see Application/sandbox-image/Dockerfile).
+    "PyYAML>=6.0",
+    "psutil>=5.9",
+    "requests>=2.31",
+    # The project graph (context graph + code graph) lives in each project's own
+    # Neo4j. A hard dependency, not only the `graph` extra: `uv run` re-syncs the
+    # environment to exactly the extras it is given, so every `uv run ... alm-conn`
+    # that forgot `--extra graph` (skills, the listener, prompts) silently removed
+    # the driver the next graph-load needed.
+    "neo4j>=5.20",
+]
+
+[project.optional-dependencies]
+# Kept as an alias so existing `--extra graph` / `[graph]` references still resolve.
+graph = ["neo4j>=5.20"]
+# JenkinsHandler.py imports `jenkins` (python-jenkins). Run `uv lock` after changing this.
+jenkins = ["python-jenkins>=1.8"]
+# legacy_keyring_vault.py: read-only access to the retired OS-keyring SSH vault, for
+# `ssh-key-migrate` only. Not needed for normal operation once migration is complete.
+legacy-vault = ["keyring>=25.0", "keyrings.cryptfile>=1.3.9"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "respx>=0.21",
+]
+agent = [
+    "claude-agent-sdk>=0.1",
+]
+
+[project.scripts]
+alm-conn = "connection_sources.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["connection_sources*"]
+
+[tool.setuptools.package-data]
+connection_sources = [
+    "sync/taxonomy_defaults.json",
+    "graph/ontology_defaults.json",
+    "resources/gitlab_known_hosts",
+]

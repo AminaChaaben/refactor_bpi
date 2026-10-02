@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refactor Radar — Audit Report — {project name} — {date}</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, Segoe UI, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    color: #1a1a1a;
+    background: #fafafa;
+    line-height: 1.6;
+  }
+  h1 { font-size: 1.8rem; margin: 0 0 0.5rem 0; }
+  h2 { font-size: 1.3rem; margin: 2rem 0 1rem 0; border-bottom: 3px solid #ddd; padding-bottom: 0.5rem; }
+  h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem 0; }
+
+  .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+
+  .executive-summary { background: #fff; padding: 1.5rem; border-radius: 6px; margin-bottom: 2rem; border-left: 5px solid #0066cc; }
+  .executive-summary p { margin: 0.5rem 0; }
+
+  .summary-table, .opportunity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .summary-table th, .opportunity-table th {
+    background: #f5f5f5;
+    text-align: left;
+    padding: 0.8rem;
+    font-weight: 600;
+    border-bottom: 2px solid #ddd;
+    font-size: 0.9rem;
+  }
+  .summary-table td, .opportunity-table td {
+    padding: 0.8rem;
+    border-bottom: 1px solid #eee;
+  }
+  .summary-table tr:last-child td, .opportunity-table tr:last-child td { border-bottom: none; }
+  .summary-table tr:hover, .opportunity-table tr:hover { background: #fafafa; }
+
+  .opportunity {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-left: 5px solid #999;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    page-break-inside: avoid;
+  }
+  .opportunity.critical { border-left-color: #c0392b; }
+  .opportunity.high { border-left-color: #d9822b; }
+  .opportunity.medium { border-left-color: #f39c12; }
+  .opportunity.low { border-left-color: #7f8c8d; }
+
+  .opportunity-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+  .priority-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .priority-badge.critical { background: #ffebee; color: #c0392b; }
+  .priority-badge.high { background: #fff3e0; color: #d9822b; }
+  .priority-badge.medium { background: #fff8e1; color: #f39c12; }
+  .priority-badge.low { background: #f5f5f5; color: #7f8c8d; }
+
+  .metric {
+    font-size: 0.9rem;
+    color: #666;
+    padding: 0.4rem 0.8rem;
+    background: #f5f5f5;
+    border-radius: 3px;
+  }
+
+  .problem-statement { margin: 1rem 0; }
+  .problem-statement p { margin: 0.5rem 0; }
+
+  .affected-components, .supporting-findings, .recommendation, .priority-calculation {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 4px;
+    border-left: 3px solid #ddd;
+  }
+
+  .affected-components ul { margin: 0.5rem 0; padding-left: 1.5rem; }
+  .affected-components li { margin: 0.3rem 0; font-size: 0.95rem; }
+
+  .finding-item {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-left: 4px solid #0066cc;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 3px;
+    font-size: 0.95rem;
+  }
+  .finding-item strong { color: #0066cc; }
+  .finding-item p { margin: 0.3rem 0; }
+  .finding-item .evidence { font-family: monospace; font-size: 0.85rem; background: #f4f4f4; padding: 0.5rem; border-radius: 3px; margin: 0.5rem 0; }
+  .finding-item .proposal-link { margin-top: 0.5rem; }
+  .finding-item a { color: #0066cc; text-decoration: none; font-weight: 500; }
+  .finding-item a:hover { text-decoration: underline; }
+
+  .impact-estimate { font-size: 0.9rem; color: #666; margin-top: 0.5rem; }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #ddd;
+    font-size: 0.85rem;
+    color: #666;
+  }
+  footer dl { margin: 1rem 0; }
+  footer dt { font-weight: 600; margin-top: 0.5rem; }
+  footer dd { margin-left: 1rem; margin-bottom: 0.5rem; }
+
+  @media (max-width: 768px) {
+    body { padding: 1rem; }
+    .opportunity-header { flex-direction: column; align-items: flex-start; }
+    .metric { display: block; margin: 0.3rem 0; }
+  }
+</style>
+</head>
+<body>
+  <h1>🔍 Refactor Radar — Audit Report</h1>
+  <div class="meta">Project: {project name} &middot; Generated: {date} &middot; Opportunities: {opportunity count} &middot; Findings: {finding count}</div>
+
+  <section class="executive-summary">
+    <h2>Executive Summary</h2>
+    <p>{total_opportunities} refactoring opportunities identified across {num_families} root-cause families.</p>
+
+    <table class="summary-table">
+      <tr>
+        <th>Priority</th>
+        <th>Count</th>
+        <th>Avg Impact</th>
+        <th>Avg Confidence</th>
+      </tr>
+      <tr>
+        <td><span class="priority-badge critical">Critical</span></td>
+        <td>{count}</td>
+        <td>{avg_impact}%</td>
+        <td>{avg_confidence}%</td>
+      </tr>
+      <tr>
+        <td><span class="priority-badge high">High</span></td>
+        <td>{count}</td>
+        <td>{avg_impact}%</td>
+        <td>{avg_confidence}%</td>
+      </tr>
+      <tr>
+        <td><span class="priority-badge medium">Medium</span></td>
+        <td>{count}</td>
+        <td>{avg_impact}%</td>
+        <td>{avg_confidence}%</td>
+      </tr>
+      <tr>
+        <td><span class="priority-badge low">Low</span></td>
+        <td>{count}</td>
+        <td>{avg_impact}%</td>
+        <td>{avg_confidence}%</td>
+      </tr>
+    </table>
+  </section>
+
+  <section class="opportunities-ranked">
+    <h2>Opportunities (Ranked by Priority)</h2>
+
+    <table class="opportunity-table">
+      <tr>
+        <th>Rank</th>
+        <th>Opportunity</th>
+        <th>Priority</th>
+        <th>Impact</th>
+        <th>Risk</th>
+        <th>Affected Tests</th>
+      </tr>
+      <!-- one row per opportunity, sorted by priority score (highest first) -->
+      <tr>
+        <td>{rank}</td>
+        <td><a href="#{opportunity_id}">{opportunity_title}</a></td>
+        <td><span class="priority-badge {level}">{level}</span></td>
+        <td>{direct} direct + {transitive} transitive</td>
+        <td>{risk_level}</td>
+        <td>{test_count}</td>
+      </tr>
+    </table>
+  </section>
+
+  <section class="opportunity-details">
+    <!-- repeat this block for each opportunity -->
+    <div class="opportunity {priority_level}" id="{opportunity_id}">
+      <h2>#{rank}: {opportunity_title}</h2>
+
+      <div class="opportunity-header">
+        <span class="priority-badge {priority_level}">{priority_level}</span>
+        <span class="metric">Impact: {direct} direct, {transitive} high-confidence transitive</span>
+        <span class="metric">Risk: {risk_level}</span>
+        <span class="metric">Effort: {effort_scope}</span>
+        <span class="metric">Confidence: {confidence}%</span>
+      </div>
+
+      <div class="problem-statement">
+        <h3>Problem</h3>
+        <p><strong>{problem_statement}</strong></p>
+        <p>{description}</p>
+      </div>
+
+      <div class="affected-components">
+        <h3>Affected Components</h3>
+        <ul>
+          <li><strong>Files:</strong> {file_count} ({files_list})</li>
+          <li><strong>Classes:</strong> {class_count}</li>
+          <li><strong>Methods:</strong> {method_count}</li>
+          <li><strong>Tests:</strong> {test_count}</li>
+          <li><strong>Direct Impact:</strong> {direct} callers</li>
+          <li><strong>Transitive Impact:</strong> {transitive} high-confidence nodes (weighted by distance and relationship type)</li>
+        </ul>
+      </div>
+
+      <div class="supporting-findings">
+        <h3>Supporting Findings</h3>
+        <!-- one finding per opportunity -->
+        <div class="finding-item">
+          <strong>{finding_id} ({detector_family})</strong>
+          <p>{finding_title}</p>
+          <div class="evidence">{finding_evidence}</div>
+          <p class="proposal-link"><a href="../{affected_target}.{finding_id}.patch">View proposed diff →</a></p>
+        </div>
+      </div>
+
+      <div class="recommendation">
+        <h3>Recommendation</h3>
+        <p>{recommendation_action}</p>
+        <p class="impact-estimate">
+          Estimated reduction: {estimated_reduction}
+          ({tests_affected} tests affected by this refactoring)
+        </p>
+      </div>
+
+      <div class="priority-calculation">
+        <h3>Priority Calculation</h3>
+        <p>{priority_justification}</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h3>Legend</h3>
+    <dl>
+      <dt>Direct Impact</dt>
+      <dd>Immediate callers and dependencies of the affected components.</dd>
+
+      <dt>Transitive Impact</dt>
+      <dd>Reachable components via 2-3 hops in the call graph, weighted by distance decay (hop 1.0→0.7→0.4) and relationship type (call/import/data/semantic).</dd>
+
+      <dt>High-Confidence Impact</dt>
+      <dd>Transitive nodes with weight ≥0.8, OR high centrality (fan-in > 5), OR directly involved in execution failures.</dd>
+
+      <dt>Priority Formula</dt>
+      <dd>raw_score = (impact × confidence_ratio) / (effort × risk), where confidence_ratio is 0-1 (not a percentage). The 0-100 score shown is raw_score normalized against the minimum and maximum raw_score across every opportunity in <em>this report</em> — priority is relative to what else this audit surfaced, not an absolute scale. See each opportunity's Priority Calculation section for its raw_score and this report's range.</dd>
+
+      <dt>Risk Levels</dt>
+      <dd>Small: &lt;5 files. Medium: 5-20 files. Large: &gt;20 files.</dd>
+    </dl>
+  </footer>
+
+</body>
+</html>

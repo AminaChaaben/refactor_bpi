@@ -1,0 +1,96 @@
+# An explicit, distinct project name -- Compose otherwise names a project after its
+# containing folder, not the compose filename. This file and docker-compose.jenkins.yml
+# both live in this same docker/ folder, so without this they'd silently share one
+# project namespace: `docker compose -f docker-compose.jenkins.yml up -d
+# --remove-orphans` deleted this entire running Vault container as an "orphan" of that
+# shared project, wiping every vaulted secret (dev-mode Vault persists nothing) --
+# seen live, real incident. Naming each stack explicitly makes that impossible.
+name: talan-dev-vault
+
+# Local development HashiCorp Vault for the SSH key vault (ssh_vault.py) and for the
+# Agentic Testing Factory's per-project credentials (Application/backend's
+# RealVaultClient).
+#
+# Real server mode with file storage (storage "file" in vault-server.hcl), backed by
+# the talan-dev-vault-data volume below -- NOT dev mode. Dev mode (`server -dev`) is
+# memory-only and loses every secret on any restart/recreate of this container
+# (confirmed live: an unrelated `docker compose -f docker-compose.jenkins.yml up -d
+# --remove-orphans` deleted this container as an "orphan" of a shared, unnamed
+# Compose project and took every vaulted secret with it -- the `name:` line below
+# is what prevents the namespace collision, but dev mode would still have lost
+# everything on any ordinary restart regardless). File storage survives all of that.
+#
+# The cost of real server mode: it does NOT auto-unseal or auto-enable a KV engine
+# the way dev mode did. Both are one-time steps, below -- run them once per fresh
+# volume, not on every `up`.
+
+services:
+  vault:
+    image: hashicorp/vault:1.17
+    container_name: talan-dev-vault
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "8200:8200"
+    volumes:
+      # Deliberately at /vault/config/vault.hcl, WITHOUT a `-config=...` flag
+      # in `command:` below -- the image's own docker-entrypoint.sh already
+      # runs `vault server -config=/vault/config` (the directory) for any
+      # `server` subcommand, unconditionally, before appending our args. An
+      # explicit `-config=/vault/config/vault.hcl` on top of that made Vault
+      # load the SAME file twice (once via the directory auto-scan, once via
+      # our own flag) and register the listener stanza twice in one process
+      # -- the second registration then collided with the first with `bind:
+      # address already in use`, 100% reproducible, regardless of host port
+      # or network (confirmed live 2026-09-17: identical setup minus the
+      # redundant flag started clean). Bind-mounting the file straight into
+      # the directory the entrypoint already scans is the whole fix.
+      - ./vault-server.hcl:/vault/config/vault.hcl:ro
+      - talan-dev-vault-data:/vault/data
+    command: ["server"]
+    healthcheck:
+      # 127.0.0.1, NOT localhost -- see the historical note this repo already
+      # carries elsewhere for why (IPv6 resolves first and the probe gets
+      # "connection refused" against an IPv4-only listener). A SEALED vault now
+      # correctly reports unhealthy here (sys/health returns 503 while sealed,
+      # which wget treats as a failure) -- that is real signal, not a flake:
+      # unseal it per the instructions below.
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:8200/v1/sys/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  talan-dev-vault-data:
+
+# Usage:
+#   docker compose -f docker-compose.vault.yml up -d
+#
+# First time ever (fresh volume only -- skip this on every later `up`):
+#   A brand new named volume is owned by root, but Vault runs as the non-root
+#   `vault` user inside the container -- init fails with "mkdir /vault/data/core:
+#   permission denied" until this is fixed once:
+#     docker exec -u root talan-dev-vault chown -R vault:vault /vault/data
+#   vault operator init -address=http://localhost:8200 -key-shares=1 -key-threshold=1
+#     -> save the one unseal key and the initial root token it prints (this repo's
+#        own copy lives in the gitignored vault-init.local.json next to this file --
+#        keep that, it's the only copy). Nobody else has a copy; losing both means
+#        the data in the volume is unrecoverable. One key share is a deliberate
+#        simplification for a single local operator -- a real deployment wants
+#        more shares and a higher threshold.
+#   vault operator unseal -address=http://localhost:8200 <the unseal key>
+#   VAULT_ADDR=http://localhost:8200 VAULT_TOKEN=<the root token> \
+#     vault secrets enable -path=secret -version=2 kv
+#
+# After every later restart (this container does not auto-unseal):
+#   vault operator unseal -address=http://localhost:8200 <the unseal key>
+#
+# Point the project's .env at it (see Talan_Factory/Talan_usine_config/.env.example
+# and Application/.env.example):
+#   VAULT_ADDR=http://127.0.0.1:8200   (or http://host.docker.internal:8200 from inside the backend container)
+#   VAULT_TOKEN=<the root token from init -- NOT talan-dev-root-token any more>
+#
+# Stop (data survives, still sealed on the next start):
+#   docker compose -f docker-compose.vault.yml down
+# Stop and permanently discard everything in it:
+#   docker compose -f docker-compose.vault.yml down -v

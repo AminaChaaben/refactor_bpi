@@ -1,0 +1,19 @@
+# Refactor Radar (Ray) -- module config, factory deployment.
+#
+# {project-root} is a literal token the skill resolver replaces at activation
+# time, never a resolved path. It is what every other module here uses
+# (tea, tds, anom, core) and it is the only form that survives being checked
+# out somewhere else: this file previously carried an absolute path into a
+# different person's home directory, which meant every detection report on this
+# machine was written to a folder that does not exist.
+user_name: "QA_Consultant"
+communication_language: "fr"
+document_output_language: "fr"
+output_folder: "{project-root}/_bmad-output"
+# Ray's own detection reports and repair briefs. Under _bmad-output/ with every
+# other agent's artifacts rather than a separate top-level proposals/ folder, so
+# one run's whole paper trail sits in one place.
+rrd_artifacts: "{project-root}/_bmad-output/rrd-artifacts"
+# Set by the workflows themselves as they run; not something to fill in here.
+last_category: null
+last_code: null

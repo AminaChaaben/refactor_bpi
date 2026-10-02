@@ -1,0 +1,5 @@
+id,name,description,tags,tier,fragment_file
+evidence-and-diff-discipline,Evidence and Diff Discipline,"Shared Investigation Contract: cite evidence for every finding, propose diffs only in target project's proposals/, resolve target project first","discipline,evidence,diffs,contract",core,knowledge/evidence-and-diff-discipline.md
+detect-complexity,Detect Complexity Heuristics,"Graph complexity properties (cyclomatic, cognitive, loop depth, linear scans in loops, unguarded recursion), thresholds, cross-detector corroboration","complexity,cognitive,maintainability,hotspots",core,knowledge/detect-complexity.md
+evidence-verification-guide,Evidence Verification Guide,"How an owner independently re-verifies graph evidence via the raw Neo4j graph, bypassing the code-graph CLI","verification,evidence,neo4j,audit",core,knowledge/evidence-verification-guide.md
+detect-report-template,Detect Report Template,"Shared findings-report structure used by every rrd-detect-* skill: summary, per-finding evidence/why/fix, optional calibration notes","report,template,structure",core,knowledge/detect-report-template.md

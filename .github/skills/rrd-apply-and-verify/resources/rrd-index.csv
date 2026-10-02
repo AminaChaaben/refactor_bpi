@@ -1,0 +1,4 @@
+id,name,description,tags,tier,fragment_file
+evidence-and-diff-discipline,Evidence and Diff Discipline,"Shared Investigation Contract, with the explicit exception this workflow represents (applying diffs, not just proposing)","discipline,evidence,diffs,contract",core,knowledge/evidence-and-diff-discipline.md
+apply-and-verify-heuristics,Apply and Verify Heuristics,"Safety gate, full-file-read-before-apply rule, toolchain auto-detection, native test-report verification","apply,verify,tests,safety",core,knowledge/apply-and-verify-heuristics.md
+evidence-verification-guide,Evidence Verification Guide,"How an owner independently re-verifies graph evidence via the raw Neo4j graph, bypassing the code-graph CLI","verification,evidence,neo4j,audit",core,knowledge/evidence-verification-guide.md

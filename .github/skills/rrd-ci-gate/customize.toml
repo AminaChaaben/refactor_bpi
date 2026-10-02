@@ -1,0 +1,26 @@
+# DO NOT EDIT -- overwritten on every update.
+#
+# Workflow customization surface for rrd-ci-gate. Mirrors the
+# agent customization shape under the [workflow] namespace.
+
+[workflow]
+
+activation_steps_prepend = []
+activation_steps_append = []
+
+persistent_facts = []
+
+on_complete = ""
+
+# Gate fails when a new opportunity at or above this priority level appears
+# since the last tracked run. "critical" is the only level that fails by
+# default — an owner running a stricter pipeline may lower this to "high".
+gate_fails_at_or_above = "critical"
+
+# When true, a run with NO prior tracked snapshot (first run ever) fails
+# closed if any Critical opportunity exists at all, rather than passing
+# by default because there's nothing to compare against. Off by default:
+# a brand-new project's first audit finding Criticals is expected, not a
+# gate failure — the gate exists to catch *new* regressions, not to block
+# on a baseline that was never going to be clean on day one.
+fail_on_first_run_if_critical_exists = false

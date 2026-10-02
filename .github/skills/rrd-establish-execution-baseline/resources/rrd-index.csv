@@ -1,0 +1,4 @@
+id,name,description,tags,tier,fragment_file
+evidence-and-diff-discipline,Evidence and Diff Discipline,"Shared Investigation Contract, plus this workflow's shared source-touching exception with rrd-apply-and-verify","discipline,evidence,diffs,contract",core,knowledge/evidence-and-diff-discipline.md
+establish-execution-baseline-heuristics,Establish Execution Baseline Heuristics,"Toolchain detection, blocker diagnosis order (compile/discovery-gap/environment-whole-or-partial/genuine), manifest format for downstream workflows","baseline,toolchain,environment,multi-run",core,knowledge/establish-execution-baseline-heuristics.md
+evidence-verification-guide,Evidence Verification Guide,"How an owner independently re-verifies graph evidence via the raw Neo4j graph, bypassing the code-graph CLI","verification,evidence,neo4j,audit",core,knowledge/evidence-verification-guide.md

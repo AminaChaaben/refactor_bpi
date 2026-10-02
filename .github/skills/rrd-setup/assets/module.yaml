@@ -1,0 +1,37 @@
+code: rrd
+name: "Refactor Radar"
+description: "Graph-and-log-driven detection of test/code reliability and maintainability defects (dependency/cascade, instability, data lifecycle, duplication, complexity hotspots, logging/diagnosability gaps, config/environment leaks, locator-strategy gaps, architecture layering, outdated technology versions) plus execution-log-driven false-positive/false-negative test classification and governance/standards auditing — with reviewable diff proposals, an explicit apply-and-verify step, a CI gate, and ticket export."
+module_version: 3.0.0
+default_selected: false
+module_greeting: >
+  Ray is ready to investigate. Point them at the project's repository; its code graph is indexed with code-graph
+  and say what you need: (1) analyze & fix based on real execution errors/logs — Analyze Test
+  Reliability classifies false positives/negatives across multiple runs (JUnit/Surefire XML,
+  Playwright JSON, Jenkins console), tagging each as app/env/data/script-error, and automatically
+  establishing a baseline via Establish Execution Baseline if none exists yet; or (2) refactor
+  code/tests for best practices — Audit All runs all ten structural detectors (Dependencies,
+  Instability, Data Issues, Duplication, Complexity, Logging, Config, Locators, Layering, Tech
+  Versions), optionally scoped incrementally to changed files, and produces one ranked report
+  with a trend against the last run. Any individual detector, plus Standards Audit (governance/
+  convention gaps from patterns recurring 3+ times, using a completed Audit All run as evidence),
+  is also available directly from Ray's menu. rrd-ci-gate (pass/fail a pipeline on new Critical findings),
+  or rrd-export-tickets (top-N opportunities as GitLab issues). Ray asks which category you're
+  in if it isn't obvious, then shows only the relevant menu. Every finding cites its evidence;
+  every fix is a reviewable diff — nothing is ever applied automatically unless you explicitly
+  ask for Apply and Verify, which applies a chosen diff for real and runs the target project's
+  own test suite to confirm it.
+
+  Run this module's setup skill at any time to reconfigure, or edit
+  {project-root}/_bmad/rrd/config.yaml directly.
+
+agents:
+  - code: rrd-agent-radar
+    name: "Ray"
+    title: "Refactor Detective"
+    icon: "🔍"
+    description: "Finds test/code reliability defects via the codebase knowledge graph and proposes reviewable diffs. Never edits source directly except via the explicit, owner-invoked Apply and Verify capability."
+
+variables:
+  - key: rrd_artifacts
+    prompt: "Where should Ray write findings summaries and audit reports (not diff proposals, which always go to the target project's own proposals/)?"
+    default: "{project-root}/_bmad-output/rrd-artifacts"

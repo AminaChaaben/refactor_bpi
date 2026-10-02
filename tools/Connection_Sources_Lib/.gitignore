@@ -1,0 +1,36 @@
+# Secrets — never commit credentials
+**/.env
+**/.env.*
+!**/.env.example
+
+# Per-deployment connection config — ships as sources.example.json
+**/Config_Connection_Sources/sources.json
+
+# Runtime state (per project)
+**/.alm_state/
+**/exports/
+
+# What a project's poller remembers and exports: rebuilt on every run, and
+# specific to the machine it ran on.
+**/_bmad_state/
+**/_bmad_input/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# Vault bootstrap output (unseal keys + root token) — never commit
+**/vault-init*.json
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

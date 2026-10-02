@@ -1,0 +1,44 @@
+# Refactor Detective workflow: rrd-detect-tech-versions
+name: rrd-detect-tech-versions
+# prettier-ignore
+description: 'Find outdated technology versions (Java, JUnit, Spring, Selenium, Maven, npm deps) and propose modernization upgrades ranked by security severity, breaking-change risk, and effort. Use when the user says "detect tech versions" or "check for outdated dependencies"'
+
+config_source: "{project-root}/_bmad/rrd/config.yaml"
+output_folder: "{config_source}:output_folder"
+rrd_artifacts: "{config_source}:rrd_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+installed_path: "."
+instructions: "./instructions.md"
+validation: "./checklist.md"
+
+variables:
+  target_project: ""
+  network_access: "online" # "online": OSV.dev + npm/mvn tooling as primary source; "offline": structural + CSV fallback only
+
+default_output_file: "{rrd_artifacts}/detect-tech-versions-{target_project}.md"
+diff_output_folder: "{target_project_root}/proposals"
+
+required_tools:
+  - write_file
+  - Read
+  - Grep
+  - Glob
+  - WebFetch
+  - WebSearch
+  - Bash
+
+tags:
+  - refactor-radar
+  - modernization
+  - dependencies
+  - security
+  - versions
+
+execution_hints:
+  interactive: false
+  autonomous: true
+  iterative: false

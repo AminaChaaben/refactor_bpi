@@ -1,0 +1,42 @@
+# Refactor Detective workflow: rrd-apply-and-verify
+name: rrd-apply-and-verify
+# prettier-ignore
+description: 'Apply a chosen Refactor Radar proposal diff to the target project and run its test suite to verify the result. Use when the user says "apply the diff", "apply this proposal", or "apply and run the tests"'
+
+config_source: "{project-root}/_bmad/rrd/config.yaml"
+output_folder: "{config_source}:output_folder"
+rrd_artifacts: "{config_source}:rrd_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+installed_path: "."
+instructions: "./instructions.md"
+validation: "./checklist.md"
+
+variables:
+  target_project: ""
+  target_project_root: ""
+  proposal_selection: "" # owner-specified: "all", a specific patch filename, or an opportunity/finding id
+
+default_output_file: "{rrd_artifacts}/apply-and-verify-{target_project}-{date}.md"
+diff_output_folder: "{target_project_root}/proposals"
+
+required_tools:
+  - list_directory
+  - read_file
+  - write_file
+  - edit_file
+  - bash
+
+tags:
+  - refactor-radar
+  - apply
+  - verify
+  - tests
+
+execution_hints:
+  interactive: true
+  autonomous: false
+  iterative: true

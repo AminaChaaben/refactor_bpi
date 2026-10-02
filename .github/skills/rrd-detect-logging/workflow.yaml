@@ -1,0 +1,39 @@
+# Refactor Detective workflow: rrd-detect-logging
+name: rrd-detect-logging
+# prettier-ignore
+description: 'Find diagnosability gaps — error paths, external calls, and loops with no logging signal — that will block future root-cause analysis. Use when the user says "detect logging" or "find missing logging/instrumentation gaps"'
+
+config_source: "{project-root}/_bmad/rrd/config.yaml"
+output_folder: "{config_source}:output_folder"
+rrd_artifacts: "{config_source}:rrd_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+installed_path: "."
+instructions: "./instructions.md"
+validation: "./checklist.md"
+
+variables:
+  target_project: ""
+
+default_output_file: "{rrd_artifacts}/detect-logging-{target_project}.md"
+diff_output_folder: "{target_project_root}/proposals"
+
+required_tools:
+  - Bash
+  - Read
+  - Grep
+  - write_file
+
+tags:
+  - refactor-radar
+  - logging
+  - diagnosability
+  - root-cause-analysis
+
+execution_hints:
+  interactive: false
+  autonomous: true
+  iterative: false

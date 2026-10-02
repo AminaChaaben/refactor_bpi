@@ -1,0 +1,22 @@
+# DO NOT EDIT -- overwritten on every update.
+#
+# Workflow customization surface for rrd-export-tickets. Mirrors the
+# agent customization shape under the [workflow] namespace.
+
+[workflow]
+
+activation_steps_prepend = []
+activation_steps_append = []
+persistent_facts = []
+on_complete = ""
+
+# How many top-ranked opportunities to export by default when the owner
+# doesn't specify a count. Deliberately small — this creates real, visible
+# tickets in a shared system, so the default should never surprise anyone
+# with a bulk import of 50 issues.
+default_top_n = 5
+
+# Label(s) applied to every issue this workflow creates, so a team can
+# filter/bulk-manage Refactor Radar-originated tickets separately from
+# hand-created ones.
+issue_labels = ["refactor-radar"]

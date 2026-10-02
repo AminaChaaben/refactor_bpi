@@ -1,0 +1,31 @@
+{
+  "user_stories": [
+    "Story",
+    "User Story",
+    "Epic",
+    "Feature",
+    "Product Backlog Item"
+  ],
+  "tests": [
+    "Test",
+    "Test Case",
+    "Xray Test",
+    "Tese Case Cucumber"
+  ],
+  "test_plans": [
+    "Test Plan",
+    "Test Set",
+    "Test Suite",
+    "Test Execution",
+    "Plan de Test"
+  ],
+  "ci_pipelines": [
+    "Pipeline"
+  ],
+  "bugs": [
+    "Bug",
+    "Defect",
+    "Anomalie",
+    "Bogue"
+  ]
+}
